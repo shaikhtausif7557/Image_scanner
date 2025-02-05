@@ -27,6 +27,7 @@ function App() {
         },
       });
       setUploadStatus(`Upload successful: ${response.data.message}`);
+      alert(response.data.message)
       setExtractedText(response.data.text);
       setBarcodeData(response.data.barcodes);
     } catch (error) {

@@ -7,7 +7,7 @@ import cv2
 from pyzbar.pyzbar import decode
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)  
 
 # Directory to save uploaded images
 UPLOAD_FOLDER = 'uploads'
@@ -32,7 +32,7 @@ def upload_image():
         return jsonify({'error': 'No selected file'}), 400
 
     if file:
-        # Delete the last uploaded file if it exists
+        # Delete the last uploaded file if it exists [space bachane k liye]
         if last_uploaded_file:
             try:
                 os.remove(last_uploaded_file)
