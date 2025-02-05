@@ -13,11 +13,16 @@ CORS(app)  # Enable CORS for all routes
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Variable to keep track of the last uploaded file
+last_uploaded_file = None
+
 # Configure the app to use the upload folder
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route('/upload', methods=['POST','GET'])
+@app.route('/upload', methods=['POST'])
 def upload_image():
+    global last_uploaded_file
+
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -27,9 +32,19 @@ def upload_image():
         return jsonify({'error': 'No selected file'}), 400
 
     if file:
-        # Save the file to the upload folder
+        # Delete the last uploaded file if it exists
+        if last_uploaded_file:
+            try:
+                os.remove(last_uploaded_file)
+            except Exception as e:
+                print(f"Error deleting file {last_uploaded_file}: {e}")
+
+        # Save the new file to the upload folder
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
+
+        # Update the last uploaded file path
+        last_uploaded_file = file_path
 
         # Perform OCR and barcode/QR code scanning
         try:
